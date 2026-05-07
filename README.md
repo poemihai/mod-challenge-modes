@@ -1,6 +1,8 @@
 # AzerothCore Challenge Modes
 Challenge Modes Module for AzerothCore
 
+Updated to display text correctly for EN clients (no more question marks) 
+
 This module adds the following challenge modes:
 
 - **Hardcore** - Players who die are permanently ghosts and can never be revived.
