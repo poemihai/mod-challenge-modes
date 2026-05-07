@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
  */
 
@@ -414,7 +414,7 @@ public:
             return;
         }
         player->KillPlayer();
-        player->GetSession()->KickPlayer(std::string("极限模式角色已死亡"));
+        player->GetSession()->KickPlayer(std::string("Hardcore character has died"));
     }
 
     void OnPlayerReleasedGhost(Player* player) override
@@ -424,7 +424,7 @@ public:
             return;
         }
         player->UpdatePlayerSetting("mod-challenge-modes", HARDCORE_DEAD, 1);
-        player->GetSession()->KickPlayer(std::string("极限模式角色已死亡"));
+        player->GetSession()->KickPlayer(std::string("Hardcore character has died"));
     }
 
     void OnPlayerPVPKill(Player* /*killer*/, Player* killed) override
@@ -454,7 +454,7 @@ public:
         // A better implementation is to not allow the resurrect but this will need a new hook added first      
         player->UpdatePlayerSetting("mod-challenge-modes", HARDCORE_DEAD, 1);
         player->KillPlayer();
-        player->GetSession()->KickPlayer(std::string("极限模式角色已死亡"));
+        player->GetSession()->KickPlayer(std::string("Hardcore character has died"));
     }
     void OnPlayerGiveXP(Player* player, uint32& amount, Unit* victim, uint8 xpSource) override
     {
@@ -471,26 +471,6 @@ class ChallengeMode_SemiHardcore : public ChallengeMode
 {
 public:
     ChallengeMode_SemiHardcore() : ChallengeMode("ChallengeMode_SemiHardcore", SETTING_SEMI_HARDCORE) {}
-
-    void OnPlayerKilledByCreature(Creature* /*killer*/, Player* player) override
-    {
-        if (!sChallengeModes->challengeEnabledForPlayer(SETTING_SEMI_HARDCORE, player))
-        {
-            return;
-        }
-        for (uint8 i = 0; i < EQUIPMENT_SLOT_END; ++i)
-        {
-            if (Item* pItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, i))
-            {
-                if (pItem->GetTemplate() && !pItem->IsEquipped())
-                    continue;
-                uint8 slot = pItem->GetSlot();
-                ChatHandler(player->GetSession()).PSendSysMessage("|cffDA70D6%s |cffffffff|Hitem:%d:0:0:0:0:0:0:0:0|h[%s]|h|r", "你已失去你的", pItem->GetEntry(), pItem->GetTemplate()->Name1.c_str());
-                player->DestroyItem(INVENTORY_SLOT_BAG_0, slot, true);
-            }
-        }
-        player->SetMoney(0);
-    }
 
     void OnPlayerGiveXP(Player* player, uint32& amount, Unit* victim, uint8 xpSource) override
     {
@@ -796,35 +776,35 @@ public:
     {
         if (sChallengeModes->challengeEnabled(SETTING_HARDCORE) && !playerSettingEnabled(player, SETTING_HARDCORE) && !playerSettingEnabled(player, SETTING_SEMI_HARDCORE))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用极限模式", 0, SETTING_HARDCORE);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Hardcore Mode", 0, SETTING_HARDCORE);
         }
         if (sChallengeModes->challengeEnabled(SETTING_SEMI_HARDCORE) && !playerSettingEnabled(player, SETTING_HARDCORE) && !playerSettingEnabled(player, SETTING_SEMI_HARDCORE))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用半极限模式", 0, SETTING_SEMI_HARDCORE);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Semi-Hardcore Mode", 0, SETTING_SEMI_HARDCORE);
         }
         if (sChallengeModes->challengeEnabled(SETTING_SELF_CRAFTED) && !playerSettingEnabled(player, SETTING_SELF_CRAFTED) && !playerSettingEnabled(player, SETTING_IRON_MAN))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用自制装备模式", 0, SETTING_SELF_CRAFTED);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Self-Crafted Equipment Mode", 0, SETTING_SELF_CRAFTED);
         }
         if (sChallengeModes->challengeEnabled(SETTING_ITEM_QUALITY_LEVEL) && !playerSettingEnabled(player, SETTING_ITEM_QUALITY_LEVEL))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用低品质装备模式", 0, SETTING_ITEM_QUALITY_LEVEL);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Low Quality Equipment Mode", 0, SETTING_ITEM_QUALITY_LEVEL);
         }
         if (sChallengeModes->challengeEnabled(SETTING_SLOW_XP_GAIN) && !playerSettingEnabled(player, SETTING_SLOW_XP_GAIN) && !playerSettingEnabled(player, SETTING_VERY_SLOW_XP_GAIN))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用慢速经验模式", 0, SETTING_SLOW_XP_GAIN);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Slow XP Mode", 0, SETTING_SLOW_XP_GAIN);
         }
         if (sChallengeModes->challengeEnabled(SETTING_VERY_SLOW_XP_GAIN) && !playerSettingEnabled(player, SETTING_SLOW_XP_GAIN) && !playerSettingEnabled(player, SETTING_VERY_SLOW_XP_GAIN))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用极慢经验模式", 0, SETTING_VERY_SLOW_XP_GAIN);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Very Slow XP Mode", 0, SETTING_VERY_SLOW_XP_GAIN);
         }
         if (sChallengeModes->challengeEnabled(SETTING_QUEST_XP_ONLY) && !playerSettingEnabled(player, SETTING_QUEST_XP_ONLY))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用任务经验专属模式", 0, SETTING_QUEST_XP_ONLY);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Quest XP Only Mode", 0, SETTING_QUEST_XP_ONLY);
         }
         if (sChallengeModes->challengeEnabled(SETTING_IRON_MAN) && !playerSettingEnabled(player, SETTING_IRON_MAN) && !playerSettingEnabled(player, SETTING_SELF_CRAFTED))
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "启用铁人模式", 0, SETTING_IRON_MAN);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Iron Man Mode", 0, SETTING_IRON_MAN);
         }
         SendGossipMenuFor(player, 12669, go->GetGUID());
         return true;
@@ -833,7 +813,7 @@ public:
     bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 action) override
     {
         player->UpdatePlayerSetting("mod-challenge-modes", action, 1);
-        ChatHandler(player->GetSession()).PSendSysMessage("挑战模式已启用。");
+        ChatHandler(player->GetSession()).PSendSysMessage("Challenge mode enabled.");
         CloseGossipMenuFor(player);
         return true;
     }
